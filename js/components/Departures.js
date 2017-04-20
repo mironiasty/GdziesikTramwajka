@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 
 import { getStopDepartures } from '../utils/TtssFetch'
+import { parseVehicle } from '../utils/VehicleData'
 
 
 export default class DeparturesComponent extends Component {
@@ -22,15 +23,30 @@ export default class DeparturesComponent extends Component {
     this.setState({ departures })
   }
 
-  backToSearch(){
+  backToSearch() {
     this.props.navigator.popToTop()
   }
 
+  vehicleTypeToIcon({ low }) {
+    switch (low) {
+      case 0:
+        return '';
+      case 1:
+        return '♿*';
+      case 2:
+        return '♿';
+    }
+  }
+
   renderDeparture(departure) {
+    const vehicleType = parseVehicle(departure.vehicleId);
+
+
     return (
       <View style={styles.departureLine}>
         <Text style={styles.depLine}>{departure.patternText}</Text>
         <Text style={styles.depDirection}>{departure.direction}</Text>
+        <Text style={styles.depVehicle}>{this.vehicleTypeToIcon(vehicleType)}</Text>
         <Text style={styles.depTime}>{departure.mixedTime}</Text>
       </View>
     )
@@ -61,7 +77,7 @@ const styles = StyleSheet.create({
   backButton: {
     margin: 5,
   },
-  departureHeader:{
+  departureHeader: {
     fontSize: 16,
     padding: 4
   },
@@ -70,13 +86,16 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginBottom: 5
   },
-  depLine:{
+  depLine: {
     width: '10%'
   },
   depDirection: {
-    width: '70%'
+    width: '60%'
   },
-  depTime:{
+  depTime: {
     width: '20%'
+  },
+  depVehicle: {
+    width: '10%'
   }
 });
