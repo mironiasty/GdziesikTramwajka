@@ -4,6 +4,7 @@ import {
   Navigator,
   StyleSheet,
   Text,
+  TouchableHighlight,
   View
 } from 'react-native';
 
@@ -18,7 +19,6 @@ export default class GdziesikTramwajka extends Component {
   }
 
   renderScene(route, navigator) {
-    console.log(route)
     switch (route.type) {
       case 'search':
         return (<SearchComponent navigator={navigator} />)
@@ -29,16 +29,30 @@ export default class GdziesikTramwajka extends Component {
 
 
   render() {
-    console.log('asdf', this.state.stops)
     return (
       <View style={styles.appcontainer}>
-        <View style={styles.topBar}>
-          <Text style={styles.appName}>Gdziesik Tramwajka?</Text>
-        </View>
         <Navigator
           styles={styles.navigator}
-          initialRoute={{ type: 'search' }}
+          initialRoute={{ type: 'search', title: 'Gdziesik Tramajka' }}
           renderScene={(route, navigator) => this.renderScene(route, navigator)}
+          sceneStyle={{ paddingTop: 64 }}
+          navigationBar={
+            <Navigator.NavigationBar
+              routeMapper={{
+                LeftButton: (route, navigator, index, navState) => {
+                  if (route.type === 'search')
+                  { return null; }
+                  else {
+                    console.log(route)
+                    return ( <TouchableHighlight onPress={() => navigator.pop()} style={styles.backButton}>
+                      <Text style={styles.headerText}>◀</Text></TouchableHighlight>);
+                  }
+                },
+                RightButton: (route, navigator, index, navState) => { return null; },
+                Title: (route, navigator, index, navState) =>
+                { return (<Text style={[styles.headerText, {width: '80%'}]} numberOfLines={1} ellipsizeMode={'tail'}>{route.title}</Text>); },
+              }}
+              style={styles.topBar} />}
         />
       </View>
     );
@@ -53,13 +67,15 @@ const styles = StyleSheet.create({
   topBar: {
     padding: 10,
     paddingTop: 20,
-    backgroundColor: '#1558c4'
+    backgroundColor: '#1558c4',
+    height: 60
   },
-  appName: {
+  headerText: {
     color: '#ffdb4c',
     fontSize: 25
   },
-  navigator: {
-    backgroundColor: 'transparent',
+  backButton:{
+paddingLeft: 5
   }
+
 });

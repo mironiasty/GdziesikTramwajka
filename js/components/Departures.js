@@ -23,10 +23,6 @@ export default class DeparturesComponent extends Component {
     this.setState( departures )
   }
 
-  backToSearch() {
-    this.props.navigator.popToTop()
-  }
-
   vehicleTypeToIcon({ low }) {
     switch (low) {
       case 0:
@@ -55,16 +51,11 @@ export default class DeparturesComponent extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <TouchableHighlight
-          onPress={() => this.backToSearch()}
-          style={styles.backButton}>
-          <Text>&lt; Powrót do wyszukiwania</Text>
-        </TouchableHighlight>
-        <Text style={styles.departureHeader}>Odjazdy z przystanku {this.state.stopName}</Text>
+        <Text style={styles.departureHeader}>Odjazdy</Text>
         <FlatList
           style={styles.searchResult}
           data={this.state.departures}
-          keyExtractor={(item, index) => item.passageId}
+          keyExtractor={(item, index) => Math.random() * 10000}
           renderItem={(item) => this.renderDeparture(item.item)} />
       </View>)
   }

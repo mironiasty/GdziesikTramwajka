@@ -23,16 +23,15 @@ export default class SearchComponent extends Component {
     this.setState({ stops })
   }
 
-  onStopPress(stopId) {
-    this.props.navigator.push({ type: 'departures', data: { stopId } })
+  onStopPress(stopId, stopName) {
+    this.props.navigator.push({ type: 'departures', data: { stopId }, title: stopName })
   }
 
   renderItem(item) {
-    console.log(item)
     return (
       <TouchableHighlight
-      style={styles.singleStop}
-       onPress={() => this.onStopPress(item.id)}>
+        style={styles.singleStop}
+        onPress={() => this.onStopPress(item.id, item.name)}>
         <Text style={styles.stopName}>{item.name}</Text>
       </TouchableHighlight>
     )
@@ -44,6 +43,9 @@ export default class SearchComponent extends Component {
         <TextInput
           style={styles.searchBox}
           placeholder="Szukaj przystanku"
+          autoCorrect={false}
+          autoCapitalize={'none'}
+          autoFocus={true}
           onChangeText={(text) => this.searchMore(text)} />
         <FlatList
           style={styles.searchResult}
