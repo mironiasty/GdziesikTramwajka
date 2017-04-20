@@ -10,6 +10,7 @@ import {
 
 import SearchComponent from './components/Search'
 import DeparturesComponent from './components/Departures'
+import LineComponent from './components/Line'
 
 export default class GdziesikTramwajka extends Component {
   constructor(props) {
@@ -24,6 +25,9 @@ export default class GdziesikTramwajka extends Component {
         return (<SearchComponent navigator={navigator} />)
       case 'departures':
         return (<DeparturesComponent navigator={navigator} stopId={route.data.stopId} />)
+      case 'line':
+        console.log('liiiine', route.data)
+        return (<LineComponent navigator={navigator} tripId={route.data.tripId} />)
     }
   }
 

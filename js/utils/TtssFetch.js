@@ -17,6 +17,14 @@ export async function getStopDepartures(stopId) {
     return { departures: departures.actual, stopName: departures.stopName };
 }
 
+export async function getTripInfo(tripId){
+    console.log(tripId)
+    const response = await fetch(`http://www.ttss.krakow.pl/internetservice/services/tripInfo/tripPassages?tripId=${tripId}`);
+    const lineStop = await response.json();
+    console.log('ohhh', lineStop)
+    return lineStop.actual;
+}
+
 function decode(name) {
     return entities.decode(name);
 }

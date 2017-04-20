@@ -18,9 +18,13 @@ export default class DeparturesComponent extends Component {
     this.state = { departures: [], stopName: '' }
   }
 
+  goToLine(tripId, title) {
+    this.props.navigator.push({ type: 'line', data: { tripId: tripId }, title })
+  }
+
   async componentWillMount() {
     const departures = await getStopDepartures(this.props.stopId);
-    this.setState( departures )
+    this.setState(departures)
   }
 
   vehicleTypeToIcon({ low }) {
@@ -41,7 +45,10 @@ export default class DeparturesComponent extends Component {
     return (
       <View style={styles.departureLine}>
         <Text style={styles.depLine}>{departure.patternText}</Text>
-        <Text style={styles.depDirection}>{departure.direction}</Text>
+        <TouchableHighlight
+          onPress={() => this.goToLine(departure.tripId, `${departure.patternText} > ${departure.direction}`)} style={styles.depDirection}>
+          <Text>{departure.direction}</Text>
+          </TouchableHighlight>
         <Text style={styles.depVehicle}>{this.vehicleTypeToIcon(vehicleType)}</Text>
         <Text style={styles.depTime}>{departure.mixedTime}</Text>
       </View>
@@ -64,9 +71,6 @@ export default class DeparturesComponent extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  backButton: {
-    margin: 5,
   },
   departureHeader: {
     fontSize: 16,
