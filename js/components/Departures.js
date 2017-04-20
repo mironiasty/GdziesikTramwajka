@@ -8,26 +8,30 @@ import {
   View
 } from 'react-native';
 
-import {getStopDepartures} from '../utils/TtssFetch'
+import { getStopDepartures } from '../utils/TtssFetch'
 
 
 export default class DeparturesComponent extends Component {
   constructor(props) {
     super(props)
-    this.state = {departures: []}
+    this.state = { departures: [] }
   }
 
-  async componentWillMount(){
+  async componentWillMount() {
     const departures = await getStopDepartures(this.props.stopId);
-    this.setState({departures})
+    this.setState({ departures })
   }
 
-  renderDeparture(departure){
+  backToSearch(){
+    this.props.navigator.popToTop()
+  }
+
+  renderDeparture(departure) {
     return (
-      <View>
-        <Text>{departure.patternText}</Text>
-        <Text>{departure.direction}</Text>
-        <Text>{departure.mixedTime}</Text>
+      <View style={styles.departureLine}>
+        <Text style={styles.depLine}>{departure.patternText}</Text>
+        <Text style={styles.depDirection}>{departure.direction}</Text>
+        <Text style={styles.depTime}>{departure.mixedTime}</Text>
       </View>
     )
   }
@@ -35,12 +39,17 @@ export default class DeparturesComponent extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>Odjazdy z przystanku</Text>
-          <FlatList
-            style={styles.searchResult}
-            data={this.state.departures}
-            keyExtractor={(item, index) => item.tripId}
-            renderItem={(item) => this.renderDeparture(item.item)} />
+        <TouchableHighlight
+          onPress={() => this.backToSearch()}
+          style={styles.backButton}>
+          <Text>&lt; Powrót do wyszukiwania</Text>
+        </TouchableHighlight>
+        <Text style={styles.departureHeader}>Odjazdy z przystanku</Text>
+        <FlatList
+          style={styles.searchResult}
+          data={this.state.departures}
+          keyExtractor={(item, index) => item.tripId}
+          renderItem={(item) => this.renderDeparture(item.item)} />
       </View>)
   }
 }
@@ -48,15 +57,26 @@ export default class DeparturesComponent extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
   },
-  searchBox: {
-    marginTop: 10,
-    height: 30,
+  backButton: {
+    margin: 5,
   },
-  searchResult: {
-    flex: 1
+  departureHeader:{
+    fontSize: 16,
+    padding: 4
+  },
+  departureLine: {
+    flexDirection: 'row',
+    marginLeft: 10,
+    marginBottom: 5
+  },
+  depLine:{
+    width: '10%'
+  },
+  depDirection: {
+    width: '70%'
+  },
+  depTime:{
+    width: '20%'
   }
 });

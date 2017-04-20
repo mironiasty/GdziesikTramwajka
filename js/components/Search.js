@@ -30,8 +30,10 @@ export default class SearchComponent extends Component {
   renderItem(item) {
     console.log(item)
     return (
-      <TouchableHighlight onPress={() => this.onStopPress(item.id)}>
-        <Text>{item.name} - {item.id}</Text>
+      <TouchableHighlight
+      style={styles.singleStop}
+       onPress={() => this.onStopPress(item.id)}>
+        <Text style={styles.stopName}>{item.name}</Text>
       </TouchableHighlight>
     )
   }
@@ -56,15 +58,23 @@ export default class SearchComponent extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#89b6ff',
   },
   searchBox: {
-    marginTop: 10,
+    margin: 10,
     height: 30,
+    backgroundColor: '#d3e4ff'
   },
   searchResult: {
-    flex: 1
+    flex: 1,
+    backgroundColor: '#89b6ff',
+    padding: 10,
+  },
+  singleStop: {
+    paddingTop: 5,
+    paddingBottom: 5
+  },
+  stopName: {
+    fontSize: 15
   }
 });
