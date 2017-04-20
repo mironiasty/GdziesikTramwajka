@@ -15,12 +15,12 @@ import { parseVehicle } from '../utils/VehicleData'
 export default class DeparturesComponent extends Component {
   constructor(props) {
     super(props)
-    this.state = { departures: [] }
+    this.state = { departures: [], stopName: '' }
   }
 
   async componentWillMount() {
     const departures = await getStopDepartures(this.props.stopId);
-    this.setState({ departures })
+    this.setState( departures )
   }
 
   backToSearch() {
@@ -60,11 +60,11 @@ export default class DeparturesComponent extends Component {
           style={styles.backButton}>
           <Text>&lt; Powrót do wyszukiwania</Text>
         </TouchableHighlight>
-        <Text style={styles.departureHeader}>Odjazdy z przystanku</Text>
+        <Text style={styles.departureHeader}>Odjazdy z przystanku {this.state.stopName}</Text>
         <FlatList
           style={styles.searchResult}
           data={this.state.departures}
-          keyExtractor={(item, index) => item.tripId}
+          keyExtractor={(item, index) => item.passageId}
           renderItem={(item) => this.renderDeparture(item.item)} />
       </View>)
   }
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
   departureLine: {
     flexDirection: 'row',
     marginLeft: 10,
-    marginBottom: 5
+    marginBottom: 9
   },
   depLine: {
     width: '10%'
