@@ -1,4 +1,4 @@
-package com.gdziesiktramwajka;
+package net.mironiasty.gdziesiktramwajka;
 
 import android.app.Application;
 
