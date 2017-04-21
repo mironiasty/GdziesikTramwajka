@@ -1,5 +1,4 @@
-
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   FlatList,
   StyleSheet,
@@ -7,34 +6,40 @@ import {
   TextInput,
   TouchableHighlight,
   View
-} from 'react-native';
+} from "react-native";
 
-import { searchForStops } from '../utils/TtssFetch'
+import { searchForStops } from "../utils/TtssFetch";
 
 export default class SearchComponent extends Component {
   constructor(props) {
-    super(props)
+    super(props);
 
-    this.state = { stops: [] }
+    this.state = { stops: [] };
   }
 
   async searchMore(searchedText) {
-    const stops = await searchForStops(searchedText)
-    this.setState({ stops })
+    const stops = await searchForStops(searchedText);
+    this.setState({ stops });
   }
 
   onStopPress(stopId, stopName) {
-    this.props.navigator.push({ type: 'departures', data: { stopId }, title: stopName })
+    this.props.navigator.push({
+      type: "departures",
+      data: { stopId },
+      title: stopName
+    });
   }
 
   renderItem(item) {
     return (
       <TouchableHighlight
+        underlayColor={"#4fc3f7"} 
         style={styles.singleStop}
-        onPress={() => this.onStopPress(item.id, item.name)}>
+        onPress={() => this.onStopPress(item.id, item.name)}
+      >
         <Text style={styles.stopName}>{item.name}</Text>
       </TouchableHighlight>
-    )
+    );
   }
 
   render() {
@@ -44,14 +49,16 @@ export default class SearchComponent extends Component {
           style={styles.searchBox}
           placeholder="Szukaj przystanku"
           autoCorrect={false}
-          autoCapitalize={'none'}
+          autoCapitalize={"none"}
           autoFocus={true}
-          onChangeText={(text) => this.searchMore(text)} />
+          onChangeText={text => this.searchMore(text)}
+        />
         <FlatList
           style={styles.searchResult}
           data={this.state.stops}
           keyExtractor={(item, index) => item.id}
-          renderItem={(item) => this.renderItem(item.item)} />
+          renderItem={item => this.renderItem(item.item)}
+        />
       </View>
     );
   }
@@ -60,16 +67,16 @@ export default class SearchComponent extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff"
   },
   searchBox: {
     margin: 10,
-    backgroundColor: '#e3f2fd'
+    backgroundColor: "#e3f2fd"
   },
   searchResult: {
     flex: 1,
-    backgroundColor: '#fff',
-    padding: 10,
+    backgroundColor: "#fff",
+    padding: 10
   },
   singleStop: {
     paddingTop: 5,
