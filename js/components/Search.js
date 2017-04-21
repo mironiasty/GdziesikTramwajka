@@ -60,16 +60,15 @@ export default class SearchComponent extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#89b6ff',
+    backgroundColor: '#fff',
   },
   searchBox: {
     margin: 10,
-    height: 30,
-    backgroundColor: '#d3e4ff'
+    backgroundColor: '#e3f2fd'
   },
   searchResult: {
     flex: 1,
-    backgroundColor: '#89b6ff',
+    backgroundColor: '#fff',
     padding: 10,
   },
   singleStop: {
@@ -77,6 +76,6 @@ const styles = StyleSheet.create({
     paddingBottom: 5
   },
   stopName: {
-    fontSize: 15
+    fontSize: 18
   }
 });

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
   FlatList,
+  Image,
   StyleSheet,
   Text,
   TextInput,
@@ -30,11 +31,14 @@ export default class DeparturesComponent extends Component {
   vehicleTypeToIcon({ low }) {
     switch (low) {
       case 0:
-        return '';
+        return <Image source={require('../../assets/images/steps.png')} />;
       case 1:
-        return '♿*';
+        return <Image source={require('../../assets/images/almost_accessible.png')} />;
       case 2:
-        return '♿';
+        return <Image source={require('../../assets/images/accessible.png')} />;
+      default:
+        return <Text>?</Text>
+
     }
   }
 
@@ -49,7 +53,7 @@ export default class DeparturesComponent extends Component {
           onPress={() => this.goToLine(departure.tripId, `${departure.patternText} > ${departure.direction}`)} style={styles.depDirection}>
           <Text>{departure.direction}</Text>
           </TouchableHighlight>
-        <Text style={styles.depVehicle}>{this.vehicleTypeToIcon(vehicleType)}</Text>
+        <View style={styles.depVehicle}>{this.vehicleTypeToIcon(vehicleType)}</View>
         <Text style={styles.depTime}>{departure.mixedTime}</Text>
       </View>
     )
@@ -71,10 +75,14 @@ export default class DeparturesComponent extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#fff'
   },
   departureHeader: {
-    fontSize: 16,
-    padding: 4
+    fontSize: 19,
+    padding: 4,
+    alignSelf: 'center'
+  },
+  searchResult: {
   },
   departureLine: {
     flexDirection: 'row',
@@ -91,6 +99,7 @@ const styles = StyleSheet.create({
     width: '20%'
   },
   depVehicle: {
-    width: '10%'
+    width: '10%',
+    flexDirection: 'row'
   }
 });

@@ -44,6 +44,7 @@ export default class LIneComponent extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: '#fff'
     },
     stopLine: {
         flexDirection: 'row',

@@ -1,6 +1,7 @@
 
 import React, { Component } from 'react';
 import {
+  Image,
   Navigator,
   StyleSheet,
   Text,
@@ -37,7 +38,7 @@ export default class GdziesikTramwajka extends Component {
       <View style={styles.appcontainer}>
         <Navigator
           styles={styles.navigator}
-          initialRoute={{ type: 'search', title: 'Gdziesik Tramajka' }}
+          initialRoute={{ type: 'search', title: 'Gdziesik Tramwajka' }}
           renderScene={(route, navigator) => this.renderScene(route, navigator)}
           sceneStyle={{ paddingTop: 64 }}
           navigationBar={
@@ -45,16 +46,19 @@ export default class GdziesikTramwajka extends Component {
               routeMapper={{
                 LeftButton: (route, navigator, index, navState) => {
                   if (route.type === 'search')
-                  { return null; }
+                  { 
+                    return <Image style={styles.headerImage} source={require('../assets/images/tram.png')} /> 
+                  }
                   else {
-                    console.log(route)
-                    return ( <TouchableHighlight onPress={() => navigator.pop()} style={styles.backButton}>
-                      <Text style={styles.headerText}>◀</Text></TouchableHighlight>);
+                    return (
+                      <TouchableHighlight onPress={() => navigator.pop()} style={styles.backButton}>
+                        <Image style={styles.headerImage} source={require('../assets/images/arrow_back.png')}/>
+                      </TouchableHighlight>);
                   }
                 },
                 RightButton: (route, navigator, index, navState) => { return null; },
                 Title: (route, navigator, index, navState) =>
-                { return (<Text style={[styles.headerText, {width: '80%'}]} numberOfLines={1} ellipsizeMode={'tail'}>{route.title}</Text>); },
+                { return (<Text style={[styles.headerText, { width: '80%' }]} numberOfLines={1} ellipsizeMode={'tail'}>{route.title}</Text>); },
               }}
               style={styles.topBar} />}
         />
@@ -66,20 +70,26 @@ export default class GdziesikTramwajka extends Component {
 const styles = StyleSheet.create({
   appcontainer: {
     flex: 1,
-    backgroundColor: '#89b6ff'
+    backgroundColor: '#fff'
   },
   topBar: {
     padding: 10,
-    paddingTop: 20,
-    backgroundColor: '#1558c4',
+    paddingTop: 30,
+    paddingBottom: 0,
+    backgroundColor: '#0277bd',
     height: 60
   },
   headerText: {
-    color: '#ffdb4c',
+    color: '#e1f5fe',
+    fontFamily: 'roboto',
+    marginTop: 10,
     fontSize: 25
   },
-  backButton:{
-paddingLeft: 5
+  headerImage: {
+    marginTop: 5
+  },
+  backButton: {
+    paddingLeft: 5
   }
 
 });
