@@ -91,5 +91,4 @@ const styles = StyleSheet.create({
   backButton: {
     paddingLeft: 5
   }
-
 });
