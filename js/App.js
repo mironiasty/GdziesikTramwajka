@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import {
+  BackAndroid,
   Image,
   Navigator,
   StyleSheet,
@@ -17,6 +18,14 @@ export default class GdziesikTramwajka extends Component {
     super(props);
 
     this.state = { stops: [] };
+    BackAndroid.addEventListener("hardwareBackPress", () => {
+      if (this.refs.navigator.getCurrentRoutes().length > 1) {
+        this.refs.navigator.pop();
+        return true;
+      } else {
+        return false;
+      }
+    });
   }
 
   renderScene(route, navigator) {
@@ -42,6 +51,7 @@ export default class GdziesikTramwajka extends Component {
     return (
       <View style={styles.appcontainer}>
         <Navigator
+          ref={'navigator'}
           styles={styles.navigator}
           initialRoute={{ type: "search", title: "Gdzieśże Tramwaju" }}
           renderScene={(route, navigator) => this.renderScene(route, navigator)}
