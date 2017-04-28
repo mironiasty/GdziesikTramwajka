@@ -9,7 +9,8 @@
 	"dependencies": {
 		"html-entities": "^1.2.0",
 		"react": "16.0.0-alpha.6",
-		"react-native": "0.43.2"
+		"react-native": "0.43.2",
+		"react-native-mapbox-gl": "^5.1.0"
 	},
 	"devDependencies": {
 		"babel-jest": "19.0.0",
