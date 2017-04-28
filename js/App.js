@@ -110,7 +110,6 @@ const styles = StyleSheet.create({
   },
   headerText: {
     color: "#e1f5fe",
-    fontFamily: "roboto",
     marginTop: 10,
     fontSize: 25
   },
