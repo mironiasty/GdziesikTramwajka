@@ -43,7 +43,7 @@ export default class GdziesikTramwajka extends Component {
       <View style={styles.appcontainer}>
         <Navigator
           styles={styles.navigator}
-          initialRoute={{ type: "search", title: "Gdziesik Tramwajka" }}
+          initialRoute={{ type: "search", title: "Gdzieśże Tramwaju" }}
           renderScene={(route, navigator) => this.renderScene(route, navigator)}
           sceneStyle={{ paddingTop: 64 }}
           navigationBar={
