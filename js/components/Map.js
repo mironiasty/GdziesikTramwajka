@@ -15,8 +15,8 @@ import { MapBoxAccessToken } from "../api/MapBoxApiKey";
 Mapbox.setAccessToken(MapBoxAccessToken);
 
 const selectedStopPosition = {
-  latitude: 180256961 / 3600000.0,
-  longitude: 71939814 / 3600000.0
+  latitude: 50.064665,
+  longitude: 19.945006111111113
 };
 
 export default class MapExample extends Component {
@@ -28,7 +28,6 @@ export default class MapExample extends Component {
 
   async getStopsPosition() {
     const stopDataOrg = await getAllStops();
-
     const stopData = stopDataOrg.map(stop => ({
       id: stop.id,
       type: "point",
@@ -44,7 +43,7 @@ export default class MapExample extends Component {
     }));
     this.setState({ stopData });
   }
-  async updateTramPositions(){
+  async updateTramPositions() {
     const trams = await getTramsPosition();
     let tramPositions = trams.map(tram => ({
       coordinates: [tram.latitude, tram.longitude],
@@ -64,11 +63,14 @@ export default class MapExample extends Component {
   async componentWillMount() {
     await this.getStopsPosition();
     await this.updateTramPositions();
-    this.intervalHandler = setInterval(async () =>  await this.updateTramPositions(), 10*1000);
+    this.intervalHandler = setInterval(
+      async () => await this.updateTramPositions(),
+      10 * 1000
+    );
   }
 
-  componentWillUnmount(){
-    clearInterval(this.intervalHandler)
+  componentWillUnmount() {
+    clearInterval(this.intervalHandler);
   }
   render() {
     // StatusBar.setHidden(true);
@@ -83,7 +85,7 @@ export default class MapExample extends Component {
           initialZoomLevel={14}
           rotateEnabled={false}
           pitchEnabled={false}
-          showsUserLocation={true}
+          showsUserLocation={false}
           styleURL={Mapbox.mapStyles.light}
           annotations={postitions}
         />

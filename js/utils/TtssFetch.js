@@ -5,7 +5,7 @@ const entities = new Html5Entities();
 export async function searchForStops(partialName) {
   if (!partialName) return;
   const stops = await fetchTtssData(
-    "http://www.ttss.krakow.pl/internetservice/services/lookup/autocomplete/json",
+    "services/lookup/autocomplete/json",
     { query: partialName }
   );
   stops.shift();
@@ -14,7 +14,7 @@ export async function searchForStops(partialName) {
 
 export async function getStopDepartures(stopId) {
   const departures = await fetchTtssData(
-    "http://www.ttss.krakow.pl/internetservice/services/passageInfo/stopPassages/stop",
+    "services/passageInfo/stopPassages/stop",
     { stop: stopId, mode: "departure" }
   );
   const act = departures.actual;
@@ -23,7 +23,7 @@ export async function getStopDepartures(stopId) {
 
 export async function getTripInfo(tripId) {
   const lineStop = await fetchTtssData(
-    "http://www.ttss.krakow.pl/internetservice/services/tripInfo/tripPassages",
+    "services/tripInfo/tripPassages",
     { tripId }
   );
   return lineStop.actual;
