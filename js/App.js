@@ -9,6 +9,7 @@ import {
   View
 } from "react-native";
 
+import MapExample from './components/Map'
 import SearchComponent from "./components/Search";
 import DeparturesComponent from "./components/Departures";
 import LineComponent from "./components/Line";
@@ -40,10 +41,13 @@ export default class GdziesikTramwajka extends Component {
           />
         );
       case "line":
-        console.log("liiiine", route.data);
         return (
           <LineComponent navigator={navigator} tripId={route.data.tripId} />
         );
+      case "map":
+        return (
+          <MapExample />
+        )
     }
   }
 
