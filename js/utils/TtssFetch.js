@@ -1,4 +1,5 @@
 import { Html5Entities } from "html-entities";
+import { AsyncStorage } from "react-native";
 const entities = new Html5Entities();
 
 export async function searchForStops(partialName) {
@@ -37,14 +38,28 @@ export async function getStopLocation(stopId) {
 }
 
 export async function getAllStops() {
+  const cached = await AsyncStorage.getItem("allStops");
+  const allStopsCached = JSON.parse(cached);
+  let yesterday = Date.now() - 1000 * 60 * 60 * 24;
+  if (allStopsCached && allStopsCached.cacheTime > yesterday)
+    return allStopsCached.stops;
+
   const allStopsResult = await fetchTtssData(
     "geoserviceDispatcher/services/stopinfo/stops",
     { left: -648000000, bottom: -324000000, right: 648000000, top: 324000000 }
   );
 
-  return allStopsResult.stops
+  const stops = allStopsResult.stops
     .filter(stop => stop.category === "tram")
     .map(convertCoordinates);
+  await AsyncStorage.setItem(
+    "allStops",
+    JSON.stringify({
+      cacheTime: Date.now(),
+      stops: stops
+    })
+  );
+  return stops;
 }
 
 let lastUpdate = 0;
@@ -92,7 +107,7 @@ export async function getTramsPosition() {
   const vehicles = allTrams.vehicles;
 
   removeDeletedTramPositions(vehicles);
-  updateTramPositions(vehicles)
+  updateTramPositions(vehicles);
   return Object.keys(tramPositions).map(key => tramPositions[key]);
 }
 
@@ -112,6 +127,7 @@ async function fetchTtssData(path, params) {
     }
   }
   const uri = `${ttssFetchBase}${path}${additionalParams}`;
+  console.log("ttss query", uri);
   const response = await fetch(uri);
   return await response.json();
 }
