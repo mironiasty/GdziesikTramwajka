@@ -35,7 +35,7 @@ export default class SearchComponent extends Component {
       <TouchableHighlight
         underlayColor={"#4fc3f7"} 
         style={styles.singleStop}
-        onPress={() => this.onStopPress(item.id, item.name)}
+        onPress={() => {this.refs.dupa.blur(); this.onStopPress(item.id, item.name)}}
       >
         <Text style={styles.stopName}>{item.name}</Text>
       </TouchableHighlight>
@@ -46,6 +46,7 @@ export default class SearchComponent extends Component {
     return (
       <View style={styles.container}>
         <TextInput
+          ref={'dupa'}
           style={styles.searchBox}
           placeholder="Szukaj przystanku"
           autoCorrect={false}
@@ -54,6 +55,7 @@ export default class SearchComponent extends Component {
           onChangeText={text => this.searchMore(text)}
         />
         <FlatList
+        keyboardShouldPersistTaps='always'
           style={styles.searchResult}
           data={this.state.stops}
           keyExtractor={(item, index) => item.id}
