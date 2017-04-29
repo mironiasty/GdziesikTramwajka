@@ -42,11 +42,11 @@ export default class GdziesikTramwajka extends Component {
         );
       case "line":
         return (
-          <LineComponent navigator={navigator} tripId={route.data.tripId} />
+          <LineComponent navigator={navigator} tripId={route.data.tripId} vehicleId={route.data.vehicleId} />
         );
       case "map":
         return (
-          <MapExample />
+          <MapExample stopId={route.data.stopId} tramId={route.data.tramId}/>
         )
     }
   }

@@ -41,6 +41,7 @@ export default class MapExample extends Component {
         width: 16 // required. number. Image width}
       }
     }));
+    this.goToStop(stopDataOrg);
     this.setState({ stopData });
   }
   async updateTramPositions() {
@@ -58,8 +59,30 @@ export default class MapExample extends Component {
         width: 16 // required. number. Image width}
       }
     }));
+    this.goToTram(trams);
     this.setState({ tramPositions });
   }
+
+  goToTram(trams){
+    if (this.props.tramId) {
+      trams.forEach(s => {
+        if (s.id == this.props.tramId) {
+          this.refs.mapView.setCenterCoordinate(s.latitude, s.longitude, true);
+        }
+      });
+    }
+  }
+
+  goToStop(stops) {
+    if (this.props.stopId) {
+      stops.forEach(s => {
+        if (s.shortName == this.props.stopId) {
+          this.refs.mapView.setCenterCoordinate(s.latitude, s.longitude, true);
+        }
+      });
+    }
+  }
+
   async componentWillMount() {
     await this.getStopsPosition();
     await this.updateTramPositions();
@@ -80,6 +103,7 @@ export default class MapExample extends Component {
     return (
       <View style={styles.container}>
         <MapView
+          ref={"mapView"}
           style={styles.map}
           initialCenterCoordinate={selectedStopPosition}
           initialZoomLevel={14}

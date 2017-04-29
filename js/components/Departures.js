@@ -18,11 +18,19 @@ export default class DeparturesComponent extends Component {
     this.state = { departures: [], stopName: "" };
   }
 
-  goToLine(tripId, title) {
+  goToLine(tripId, vehicleId, title) {
     this.props.navigator.push({
       type: "line",
-      data: { tripId: tripId },
+      data: { tripId , vehicleId},
       title
+    });
+  }
+
+  goToMap() {
+    this.props.navigator.push({
+      type: "map",
+      data: { stopId: this.props.stopId },
+      title: "Mapa odjazdów"
     });
   }
 
@@ -50,7 +58,6 @@ export default class DeparturesComponent extends Component {
 
   renderDeparture(departure) {
     const vehicleType = parseVehicle(departure.vehicleId);
-
     return (
       <View style={styles.departureLine}>
         <Text style={styles.depLine}>{departure.patternText}</Text>
@@ -58,7 +65,7 @@ export default class DeparturesComponent extends Component {
           underlayColor={"#4fc3f7"}
           onPress={() =>
             this.goToLine(
-              departure.tripId,
+              departure.tripId, departure.vehicleId,
               `${departure.patternText} > ${departure.direction}`
             )}
           style={styles.depDirection}
@@ -76,6 +83,12 @@ export default class DeparturesComponent extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <TouchableHighlight
+          underlayColor={"#4fc3f7"}
+          onPress={() => this.goToMap()}
+        >
+          <Text>Pokaż na mapie</Text>
+        </TouchableHighlight>
         <Text style={styles.departureHeader}>Odjazdy</Text>
         <FlatList
           style={styles.searchResult}

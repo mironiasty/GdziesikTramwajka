@@ -35,7 +35,7 @@ export default class SearchComponent extends Component {
       <TouchableHighlight
         underlayColor={"#4fc3f7"} 
         style={styles.singleStop}
-        onPress={() => {this.refs.dupa.blur(); this.onStopPress(item.id, item.name)}}
+        onPress={() => {this.refs.searchbox.blur(); this.onStopPress(item.id, item.name)}}
       >
         <Text style={styles.stopName}>{item.name}</Text>
       </TouchableHighlight>
@@ -46,7 +46,7 @@ export default class SearchComponent extends Component {
     return (
       <View style={styles.container}>
         <TextInput
-          ref={'dupa'}
+          ref={'searchbox'}
           style={styles.searchBox}
           placeholder="Szukaj przystanku"
           autoCorrect={false}

@@ -16,6 +16,14 @@ export default class LIneComponent extends Component {
     this.state = { stops: [] };
   }
 
+    goToMap() {
+    this.props.navigator.push({
+      type: "map",
+      data: { tramId: this.props.vehicleId },
+      title: "Mapa odjazdów"
+    });
+  }
+
   async componentWillMount() {
     const stops = await getTripInfo(this.props.tripId);
     this.setState({ stops });
@@ -24,7 +32,7 @@ export default class LIneComponent extends Component {
   renderItem(item) {
     return (
       <View style={styles.stopLine}>
-        <Text style={styles.depTime}>{item.actualTime}</Text>
+        <Text style={styles.depTime}>{item.actualTime ? item.actualTime : item.plannedTime}</Text>
         <Text style={styles.stop}>{item.stop.name}</Text>
       </View>
     );
@@ -33,6 +41,12 @@ export default class LIneComponent extends Component {
   render() {
     return (
       <View style={styles.container}>
+         <TouchableHighlight
+          underlayColor={"#4fc3f7"}
+          onPress={() => this.goToMap()}
+        >
+          <Text>Pokaż na mapie</Text>
+        </TouchableHighlight>
         <FlatList
           style={styles.searchResult}
           data={this.state.stops}
