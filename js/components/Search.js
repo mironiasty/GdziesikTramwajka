@@ -15,6 +15,7 @@ export default class SearchComponent extends Component {
     super(props);
 
     this.state = { stops: [] };
+    this._navigate = this.props.navigation.navigate;
   }
 
   async searchMore(searchedText) {
@@ -23,19 +24,18 @@ export default class SearchComponent extends Component {
   }
 
   onStopPress(stopId, stopName) {
-    this.props.navigator.push({
-      type: "departures",
-      data: { stopId },
-      title: stopName
-    });
+    this._navigate("Departures", { stopId, stopName });
   }
 
   renderItem(item) {
     return (
       <TouchableHighlight
-        underlayColor={"#4fc3f7"} 
+        underlayColor={"#4fc3f7"}
         style={styles.singleStop}
-        onPress={() => {this.refs.searchbox.blur(); this.onStopPress(item.id, item.name)}}
+        onPress={() => {
+          this.refs.searchbox.blur();
+          this.onStopPress(item.id, item.name);
+        }}
       >
         <Text style={styles.stopName}>{item.name}</Text>
       </TouchableHighlight>
@@ -46,7 +46,7 @@ export default class SearchComponent extends Component {
     return (
       <View style={styles.container}>
         <TextInput
-          ref={'searchbox'}
+          ref={"searchbox"}
           style={styles.searchBox}
           placeholder="Szukaj przystanku"
           autoCorrect={false}
@@ -55,7 +55,7 @@ export default class SearchComponent extends Component {
           onChangeText={text => this.searchMore(text)}
         />
         <FlatList
-        keyboardShouldPersistTaps='always'
+          keyboardShouldPersistTaps="always"
           style={styles.searchResult}
           data={this.state.stops}
           keyExtractor={(item, index) => item.id}

@@ -1,6 +1,5 @@
+import { AppRegistry } from "react-native";
 
-import { AppRegistry } from 'react-native';
+import GdziesikTramwajka from "./js/App";
 
-import GdziesikTramwajka from './js/App'
-
-AppRegistry.registerComponent('GdziesikTramwajka', () => GdziesikTramwajka);
+AppRegistry.registerComponent("GdziesikTramwajka", () => GdziesikTramwajka);

@@ -16,26 +16,25 @@ export default class DeparturesComponent extends Component {
   constructor(props) {
     super(props);
     this.state = { departures: [], stopName: "" };
+
+    this._stopId = this.props.navigation.state.params.stopId;
+    this._navigate = this.props.navigation.navigate;
   }
 
+  static navigationOptions = ({ navigation }) => ({
+    title: navigation.state.params.stopName
+  });
+
   goToLine(tripId, vehicleId, title) {
-    this.props.navigator.push({
-      type: "line",
-      data: { tripId , vehicleId},
-      title
-    });
+    this._navigate("Line", { tripId, vehicleId, title});
   }
 
   goToMap() {
-    this.props.navigator.push({
-      type: "map",
-      data: { stopId: this.props.stopId },
-      title: "Mapa odjazdów"
-    });
+    this._navigate("Map", { stopId: this._stopId });
   }
 
   async componentWillMount() {
-    const departures = await getStopDepartures(this.props.stopId);
+    const departures = await getStopDepartures(this._stopId);
     this.setState(departures);
   }
 
@@ -65,7 +64,8 @@ export default class DeparturesComponent extends Component {
           underlayColor={"#4fc3f7"}
           onPress={() =>
             this.goToLine(
-              departure.tripId, departure.vehicleId,
+              departure.tripId,
+              departure.vehicleId,
               `${departure.patternText} > ${departure.direction}`
             )}
           style={styles.depDirection}

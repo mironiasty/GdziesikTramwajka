@@ -9,128 +9,33 @@ import {
   View
 } from "react-native";
 
-import MapExample from './components/Map'
+import { StackNavigator } from "react-navigation";
+
+import MapExample from "./components/Map";
 import SearchComponent from "./components/Search";
 import DeparturesComponent from "./components/Departures";
 import LineComponent from "./components/Line";
 
-export default class GdziesikTramwajka extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = { stops: [] };
-    BackAndroid.addEventListener("hardwareBackPress", () => {
-      if (this.refs.navigator.getCurrentRoutes().length > 1) {
-        this.refs.navigator.pop();
-        return true;
-      } else {
-        return false;
+export const GdziesikTramwajka = StackNavigator(
+  {
+    Search: {
+      screen: SearchComponent,
+      navigationOptions: {
+        headerLeft: <Image source={require("../assets/images/tram.png")} />
       }
-    });
-  }
-
-  renderScene(route, navigator) {
-    switch (route.type) {
-      case "search":
-        return <SearchComponent navigator={navigator} />;
-      case "departures":
-        return (
-          <DeparturesComponent
-            navigator={navigator}
-            stopId={route.data.stopId}
-          />
-        );
-      case "line":
-        return (
-          <LineComponent navigator={navigator} tripId={route.data.tripId} vehicleId={route.data.vehicleId} />
-        );
-      case "map":
-        return (
-          <MapExample stopId={route.data.stopId} tramId={route.data.tramId}/>
-        )
+    },
+    Departures: { screen: DeparturesComponent },
+    Line: { screen: LineComponent },
+    Map: { screen: MapExample, navigationOptions: {title: "Mapa odjazdów"} }
+  },
+  {
+    navigationOptions: {
+      title: "Gdzieśże Tramwaju",
+      headerTintColor: "#e1f5fe",
+      headerStyle: {
+        backgroundColor: "#0277bd"
+      }
     }
   }
+);
 
-  render() {
-    return (
-      <View style={styles.appcontainer}>
-        <Navigator
-          ref={'navigator'}
-          styles={styles.navigator}
-          initialRoute={{ type: "search", title: "Gdzieśże Tramwaju" }}
-          renderScene={(route, navigator) => this.renderScene(route, navigator)}
-          sceneStyle={{ paddingTop: 64 }}
-          navigationBar={
-            <Navigator.NavigationBar
-              routeMapper={{
-                LeftButton: (route, navigator, index, navState) => {
-                  if (route.type === "search") {
-                    return (
-                      <Image
-                        style={styles.headerImage}
-                        source={require("../assets/images/tram.png")}
-                      />
-                    );
-                  } else {
-                    return (
-                      <TouchableHighlight
-                        onPress={() => navigator.pop()}
-                        style={styles.backButton}
-                        underlayColor={"#4fc3f7"}
-                      >
-                        <Image
-                          style={styles.headerImage}
-                          source={require("../assets/images/arrow_back.png")}
-                        />
-                      </TouchableHighlight>
-                    );
-                  }
-                },
-                RightButton: (route, navigator, index, navState) => {
-                  return null;
-                },
-                Title: (route, navigator, index, navState) => {
-                  return (
-                    <Text
-                      style={[styles.headerText, { width: "80%" }]}
-                      numberOfLines={1}
-                      ellipsizeMode={"tail"}
-                    >
-                      {route.title}
-                    </Text>
-                  );
-                }
-              }}
-              style={styles.topBar}
-            />
-          }
-        />
-      </View>
-    );
-  }
-}
-
-const styles = StyleSheet.create({
-  appcontainer: {
-    flex: 1,
-    backgroundColor: "#fff"
-  },
-  topBar: {
-    padding: 10,
-    paddingTop: 30,
-    paddingBottom: 0,
-    backgroundColor: "#0277bd",
-    height: 60
-  },
-  headerText: {
-    color: "#e1f5fe",
-    marginTop: 10,
-    fontSize: 25
-  },
-  headerImage: {
-    marginTop: 5
-  },
-  backButton: {
-    paddingLeft: 5
-  }
-});

@@ -25,6 +25,11 @@ export default class MapExample extends Component {
     this.state = { stopData: [], tramPositions: [] };
     this.intervalHandler = null;
     this._map = null;
+
+    this._stopId = this.props.navigation.state.params.stopId;
+    this._tramId = this.props.navigation.state.params.tramId;
+    this._navigate = this.props.navigation.navigate;
+    console.log('eehhh', this.props.navigation.state.params)
   }
 
   async getStopsPosition() {
@@ -36,7 +41,7 @@ export default class MapExample extends Component {
       coordinates: [stop.latitude, stop.longitude],
       annotationImage: {
         source: {
-          uri: this.props.stopId === stop.shortName ? "stopred" : "stop"
+          uri: this._stopId === stop.shortName ? "stopred" : "stop"
         },
         height: 16, // required. number. Image height
         width: 16 // required. number. Image width}
@@ -55,7 +60,7 @@ export default class MapExample extends Component {
       id: tram.id,
       annotationImage: {
         source: {
-          uri: this.props.tramId === tram.id ? "ridingtramred" : "ridingtram"
+          uri: this._tramId === tram.id ? "ridingtramred" : "ridingtram"
         },
         height: 16, // required. number. Image height
         width: 16 // required. number. Image width}
@@ -66,9 +71,9 @@ export default class MapExample extends Component {
   }
 
   goToTram(trams) {
-    if (this.props.tramId) {
+    if (this._tramId) {
       trams.forEach(s => {
-        if (s.id == this.props.tramId) {
+        if (s.id == this._tramId) {
           InteractionManager.runAfterInteractions(() =>
             this._map.setCenterCoordinate(s.latitude, s.longitude, true)
           );
@@ -78,9 +83,9 @@ export default class MapExample extends Component {
   }
 
   goToStop(stops) {
-    if (this.props.stopId) {
+    if (this._stopId) {
       stops.forEach(s => {
-        if (s.shortName == this.props.stopId) {
+        if (s.shortName == this._stopId) {
           InteractionManager.runAfterInteractions(() =>
             this._map.setCenterCoordinate(s.latitude, s.longitude, true)
           );

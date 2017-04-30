@@ -14,25 +14,30 @@ export default class LIneComponent extends Component {
   constructor(props) {
     super(props);
     this.state = { stops: [] };
+    this._vehicleId = this.props.navigation.state.params.vehicleId;
+    this._tripId = this.props.navigation.state.params.tripId;
+    this._navigate = this.props.navigation.navigate;
   }
 
-    goToMap() {
-    this.props.navigator.push({
-      type: "map",
-      data: { tramId: this.props.vehicleId },
-      title: "Mapa odjazdów"
-    });
+  static navigationOptions = ({ navigation }) => ({
+    title: navigation.state.params.title
+  });
+
+  goToMap() {
+    this._navigate("Map", {tramId: this._vehicleId})
   }
 
   async componentWillMount() {
-    const stops = await getTripInfo(this.props.tripId);
+    const stops = await getTripInfo(this._tripId);
     this.setState({ stops });
   }
 
   renderItem(item) {
     return (
       <View style={styles.stopLine}>
-        <Text style={styles.depTime}>{item.actualTime ? item.actualTime : item.plannedTime}</Text>
+        <Text style={styles.depTime}>
+          {item.actualTime ? item.actualTime : item.plannedTime}
+        </Text>
         <Text style={styles.stop}>{item.stop.name}</Text>
       </View>
     );
@@ -41,7 +46,7 @@ export default class LIneComponent extends Component {
   render() {
     return (
       <View style={styles.container}>
-         <TouchableHighlight
+        <TouchableHighlight
           underlayColor={"#4fc3f7"}
           onPress={() => this.goToMap()}
         >
