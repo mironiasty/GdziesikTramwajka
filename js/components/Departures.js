@@ -11,11 +11,16 @@ import {
 
 import { getStopDepartures } from "../utils/TtssFetch";
 import { parseVehicle } from "../utils/VehicleData";
+import timer from "react-native-timer";
 
 export default class DeparturesComponent extends Component {
   constructor(props) {
     super(props);
-    this.state = { departures: [], stopName: "" };
+    this.state = {
+      departures: [],
+      stopName: "",
+      lastUpdateCounter: 0
+    };
 
     this._stopId = this.props.navigation.state.params.stopId;
     this._navigate = this.props.navigation.navigate;
@@ -33,9 +38,30 @@ export default class DeparturesComponent extends Component {
     this._navigate("Map", { stopId: this._stopId });
   }
 
-  async componentWillMount() {
+  async refreshDepartures() {
     const departures = await getStopDepartures(this._stopId);
-    this.setState(departures);
+    this.setState({ departures: departures.departures, lastUpdateCounter: 0 }); //: departures, lastUpdateCounter: 0});
+  }
+
+  async componentWillMount() {
+    await this.refreshDepartures();
+    timer.setInterval(
+      this,
+      "refresh",
+      async () => await this.refreshDepartures(),
+      10 * 1000
+    );
+    timer.setInterval(
+      this,
+      "updateTimer",
+      () =>
+        this.setState({ lastUpdateCounter: this.state.lastUpdateCounter + 1 }),
+      1000
+    );
+  }
+
+  componentWillUnmount() {
+    timer.clearInterval(this);
   }
 
   vehicleTypeToIcon({ low }) {
@@ -83,6 +109,13 @@ export default class DeparturesComponent extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <View style={styles.lastUpdateWrapper}>
+          <Text style={styles.lastUpdate}>Aktualizacja</Text>
+          <Text style={styles.lastUpdate}>
+            {this.state.lastUpdateCounter}s temu
+          </Text>
+
+        </View>
         <Text style={styles.departureHeader}>Odjazdy</Text>
         <FlatList
           style={styles.searchResult}
@@ -144,5 +177,12 @@ const styles = StyleSheet.create({
     height: 50,
     width: 50,
     resizeMode: "cover"
+  },
+  lastUpdateWrapper: {
+    position: "absolute",
+    right: 5
+  },
+  lastUpdate: {
+    fontSize: 10
   }
 });

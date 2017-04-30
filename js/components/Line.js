@@ -10,11 +10,15 @@ import {
 } from "react-native";
 
 import { getTripInfo } from "../utils/TtssFetch";
+import timer from "react-native-timer";
 
 export default class LIneComponent extends Component {
   constructor(props) {
     super(props);
-    this.state = { stops: [] };
+    this.state = {
+      stops: [],
+      lastUpdateCounter: 0
+    };
     this._vehicleId = this.props.navigation.state.params.vehicleId;
     this._tripId = this.props.navigation.state.params.tripId;
     this._navigate = this.props.navigation.navigate;
@@ -28,9 +32,29 @@ export default class LIneComponent extends Component {
     this._navigate("Map", { tramId: this._vehicleId });
   }
 
-  async componentWillMount() {
+  async refreshLines() {
     const stops = await getTripInfo(this._tripId);
-    this.setState({ stops });
+    this.setState({ stops, lastUpdateCounter: 0 });
+  }
+  async componentWillMount() {
+    await this.refreshLines();
+    timer.setInterval(
+      this,
+      "refresh",
+      async () => await this.refreshLines(),
+      10 * 1000
+    );
+    timer.setInterval(
+      this,
+      "updateTimer",
+      () =>
+        this.setState({ lastUpdateCounter: this.state.lastUpdateCounter + 1 }),
+      1000
+    );
+  }
+
+  componentWillUnmount() {
+    timer.clearInterval(this);
   }
 
   renderItem(item) {
@@ -47,6 +71,15 @@ export default class LIneComponent extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <View style={styles.lastUpdateWrapper}>
+          <Text style={styles.lastUpdate}>Aktualizacja</Text>
+          <Text style={styles.lastUpdate}>
+            {this.state.lastUpdateCounter}s temu
+          </Text>
+
+        </View>
+        <Text style={styles.departureHeader}>Trasa linii</Text>
+
         <FlatList
           style={styles.searchResult}
           data={this.state.stops}
@@ -73,6 +106,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff"
   },
+  departureHeader: {
+    fontSize: 19,
+    padding: 4,
+    alignSelf: "center"
+  },
   stopLine: {
     flexDirection: "row",
     marginLeft: 10,
@@ -93,5 +131,12 @@ const styles = StyleSheet.create({
     height: 50,
     width: 50,
     resizeMode: "cover"
+  },
+  lastUpdateWrapper: {
+    position: "absolute",
+    right: 5
+  },
+  lastUpdate: {
+    fontSize: 10
   }
 });
