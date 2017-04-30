@@ -26,7 +26,7 @@ export default class DeparturesComponent extends Component {
   });
 
   goToLine(tripId, vehicleId, title) {
-    this._navigate("Line", { tripId, vehicleId, title});
+    this._navigate("Line", { tripId, vehicleId, title });
   }
 
   goToMap() {
@@ -83,12 +83,6 @@ export default class DeparturesComponent extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <TouchableHighlight
-          underlayColor={"#4fc3f7"}
-          onPress={() => this.goToMap()}
-        >
-          <Text>Pokaż na mapie</Text>
-        </TouchableHighlight>
         <Text style={styles.departureHeader}>Odjazdy</Text>
         <FlatList
           style={styles.searchResult}
@@ -96,6 +90,17 @@ export default class DeparturesComponent extends Component {
           keyExtractor={(item, index) => Math.random() * 10000}
           renderItem={item => this.renderDeparture(item.item)}
         />
+        <TouchableHighlight
+          style={styles.mapLink}
+          underlayColor={"#4fc3f7"}
+          onPress={() => this.goToMap()}
+        >
+          <Image
+            style={styles.mapLinkIcon}
+            source={require("../../assets/images/map.png")}
+          />
+        </TouchableHighlight>
+
       </View>
     );
   }
@@ -129,5 +134,15 @@ const styles = StyleSheet.create({
   depVehicle: {
     width: "10%",
     flexDirection: "row"
+  },
+  mapLink: {
+    position: "absolute",
+    bottom: 10,
+    right: 20
+  },
+  mapLinkIcon: {
+    height: 50,
+    width: 50,
+    resizeMode: "cover"
   }
 });

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import {
   FlatList,
+  Image,
   StyleSheet,
   Text,
   TextInput,
@@ -24,7 +25,7 @@ export default class LIneComponent extends Component {
   });
 
   goToMap() {
-    this._navigate("Map", {tramId: this._vehicleId})
+    this._navigate("Map", { tramId: this._vehicleId });
   }
 
   async componentWillMount() {
@@ -46,18 +47,23 @@ export default class LIneComponent extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <TouchableHighlight
-          underlayColor={"#4fc3f7"}
-          onPress={() => this.goToMap()}
-        >
-          <Text>Pokaż na mapie</Text>
-        </TouchableHighlight>
         <FlatList
           style={styles.searchResult}
           data={this.state.stops}
           keyExtractor={(item, index) => Math.random() * 10000}
           renderItem={item => this.renderItem(item.item)}
         />
+        <TouchableHighlight
+          style={styles.mapLink}
+          underlayColor={"#4fc3f7"}
+          onPress={() => this.goToMap()}
+        >
+          <Image
+            style={styles.mapLinkIcon}
+            source={require("../../assets/images/map.png")}
+          />
+        </TouchableHighlight>
+
       </View>
     );
   }
@@ -77,5 +83,15 @@ const styles = StyleSheet.create({
   },
   stop: {
     width: "70%"
+  },
+  mapLink: {
+    position: "absolute",
+    bottom: 10,
+    right: 20
+  },
+  mapLinkIcon: {
+    height: 50,
+    width: 50,
+    resizeMode: "cover"
   }
 });
