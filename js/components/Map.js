@@ -4,6 +4,7 @@
 import React, { Component } from "react";
 import Mapbox, { MapView } from "react-native-mapbox-gl";
 import { InteractionManager, StyleSheet, Text, View } from "react-native";
+import timer from "react-native-timer";
 
 import {
   getTramsPosition,
@@ -19,17 +20,16 @@ const selectedStopPosition = {
   longitude: 19.945006111111113
 };
 
-export default class MapExample extends Component {
+export default class MapComponent extends Component {
   constructor(props) {
     super(props);
-    this.state = { stopData: [], tramPositions: [] };
-    this.intervalHandler = null;
+    this.state = { stopData: [], tramPositions: [], lastUpdateCounter: 0 };
+
     this._map = null;
 
     this._stopId = this.props.navigation.state.params.stopId;
     this._tramId = this.props.navigation.state.params.tramId;
     this._navigate = this.props.navigation.navigate;
-    console.log('eehhh', this.props.navigation.state.params)
   }
 
   async getStopsPosition() {
@@ -50,6 +50,7 @@ export default class MapExample extends Component {
     this.goToStop(stopDataOrg);
     this.setState({ stopData });
   }
+
   async updateTramPositions() {
     const trams = await getTramsPosition();
 
@@ -67,7 +68,7 @@ export default class MapExample extends Component {
       }
     }));
     this.goToTram(trams);
-    this.setState({ tramPositions });
+    this.setState({ tramPositions, lastUpdateCounter: 0 });
   }
 
   goToTram(trams) {
@@ -97,14 +98,23 @@ export default class MapExample extends Component {
   async componentWillMount() {
     await this.getStopsPosition();
     await this.updateTramPositions();
-    this.intervalHandler = setInterval(
+    timer.setInterval(
+      this,
+      "refreshMap",
       async () => await this.updateTramPositions(),
       10 * 1000
+    );
+    timer.setInterval(
+      this,
+      "updateTimer",
+      () =>
+        this.setState({ lastUpdateCounter: this.state.lastUpdateCounter + 1 }),
+      1000
     );
   }
 
   componentWillUnmount() {
-    clearInterval(this.intervalHandler);
+    timer.clearInterval(this);
   }
   render() {
     // StatusBar.setHidden(true);
@@ -126,7 +136,9 @@ export default class MapExample extends Component {
           styleURL={Mapbox.mapStyles.light}
           annotations={postitions}
         />
-
+        <View style={styles.lastUpdateWrapper}>
+          <Text style={styles.lastUpdate}>Aktualizacja: {this.state.lastUpdateCounter}s temu</Text>
+        </View>
       </View>
     );
   }
@@ -139,5 +151,14 @@ const styles = StyleSheet.create({
   },
   map: {
     flex: 1
+  },
+  lastUpdateWrapper: {
+    position: "absolute",
+    bottom: 20,
+    right: 10
+  },
+  lastUpdate: {
+    fontSize: 10,
+    color: "#0277bd"
   }
 });

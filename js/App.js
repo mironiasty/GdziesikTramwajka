@@ -11,7 +11,7 @@ import {
 
 import { StackNavigator } from "react-navigation";
 
-import MapExample from "./components/Map";
+import MapComponent from "./components/Map";
 import SearchComponent from "./components/Search";
 import DeparturesComponent from "./components/Departures";
 import LineComponent from "./components/Line";
@@ -26,7 +26,7 @@ export const GdziesikTramwajka = StackNavigator(
     },
     Departures: { screen: DeparturesComponent },
     Line: { screen: LineComponent },
-    Map: { screen: MapExample, navigationOptions: {title: "Mapa odjazdów"} }
+    Map: { screen: MapComponent, navigationOptions: {title: "Mapa odjazdów"} }
   },
   {
     navigationOptions: {
