@@ -3,7 +3,7 @@
 
 import React, { Component } from "react";
 import Mapbox, { MapView } from "react-native-mapbox-gl";
-import { StyleSheet, Text, StatusBar, View } from "react-native";
+import { InteractionManager, StyleSheet, Text, View } from "react-native";
 
 import {
   getTramsPosition,
@@ -24,6 +24,7 @@ export default class MapExample extends Component {
     super(props);
     this.state = { stopData: [], tramPositions: [] };
     this.intervalHandler = null;
+    this._map = null;
   }
 
   async getStopsPosition() {
@@ -35,7 +36,7 @@ export default class MapExample extends Component {
       coordinates: [stop.latitude, stop.longitude],
       annotationImage: {
         source: {
-          uri: "stop"
+          uri: this.props.stopId === stop.shortName ? "stopred" : "stop"
         },
         height: 16, // required. number. Image height
         width: 16 // required. number. Image width}
@@ -46,6 +47,7 @@ export default class MapExample extends Component {
   }
   async updateTramPositions() {
     const trams = await getTramsPosition();
+
     let tramPositions = trams.map(tram => ({
       coordinates: [tram.latitude, tram.longitude],
       type: "point",
@@ -53,7 +55,7 @@ export default class MapExample extends Component {
       id: tram.id,
       annotationImage: {
         source: {
-          uri: "ridingtram"
+          uri: this.props.tramId === tram.id ? "ridingtramred" : "ridingtram"
         },
         height: 16, // required. number. Image height
         width: 16 // required. number. Image width}
@@ -63,11 +65,13 @@ export default class MapExample extends Component {
     this.setState({ tramPositions });
   }
 
-  goToTram(trams){
+  goToTram(trams) {
     if (this.props.tramId) {
       trams.forEach(s => {
         if (s.id == this.props.tramId) {
-          this.refs.mapView.setCenterCoordinate(s.latitude, s.longitude, true);
+          InteractionManager.runAfterInteractions(() =>
+            this._map.setCenterCoordinate(s.latitude, s.longitude, true)
+          );
         }
       });
     }
@@ -77,7 +81,9 @@ export default class MapExample extends Component {
     if (this.props.stopId) {
       stops.forEach(s => {
         if (s.shortName == this.props.stopId) {
-          this.refs.mapView.setCenterCoordinate(s.latitude, s.longitude, true);
+          InteractionManager.runAfterInteractions(() =>
+            this._map.setCenterCoordinate(s.latitude, s.longitude, true)
+          );
         }
       });
     }
@@ -103,7 +109,9 @@ export default class MapExample extends Component {
     return (
       <View style={styles.container}>
         <MapView
-          ref={"mapView"}
+          ref={map => {
+            this._map = map;
+          }}
           style={styles.map}
           initialCenterCoordinate={selectedStopPosition}
           initialZoomLevel={14}
