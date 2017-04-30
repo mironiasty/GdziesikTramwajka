@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import {
   FlatList,
+  NetInfo,
   StyleSheet,
   Text,
   TextInput,
@@ -14,8 +15,13 @@ export default class SearchComponent extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { stops: [] };
+    this.state = { stops: [], offline: false };
     this._navigate = this.props.navigation.navigate;
+  }
+
+  handleConnectivityChange(isConnected) {
+    console.log("Then, is " + (isConnected ? "online" : "offline"));
+    this.setState({ offline: !isConnected });
   }
 
   async searchMore(searchedText) {
@@ -25,6 +31,22 @@ export default class SearchComponent extends Component {
 
   onStopPress(stopId, stopName) {
     this._navigate("Departures", { stopId, stopName });
+  }
+
+  componentWillMount() {
+    NetInfo.isConnected.fetch().then(isConnected => {
+      this.setState({ offline: !isConnected });
+      console.log("First, is " + (isConnected ? "online" : "offline"));
+    });
+    NetInfo.isConnected.addEventListener("change", () =>
+      this.handleConnectivityChange()
+    );
+  }
+
+  componentWillUnmount() {
+    NetInfo.isConnected.removeEventListener("change", () =>
+      this.handleConnectivityChange()
+    );
   }
 
   renderItem(item) {
@@ -40,6 +62,19 @@ export default class SearchComponent extends Component {
         <Text style={styles.stopName}>{item.name}</Text>
       </TouchableHighlight>
     );
+  }
+
+  renderNoConnection() {
+    if (this.state.offline) {
+      return (
+        <View style={styles.offline}>
+          <Text style={styles.offlineText}>
+            Sprawdź swoje połączenie z internetem
+          </Text>
+        </View>
+      );
+    }
+    return null;
   }
 
   render() {
@@ -61,6 +96,8 @@ export default class SearchComponent extends Component {
           keyExtractor={(item, index) => item.id}
           renderItem={item => this.renderItem(item.item)}
         />
+        {this.renderNoConnection()}
+
       </View>
     );
   }
@@ -86,5 +123,16 @@ const styles = StyleSheet.create({
   },
   stopName: {
     fontSize: 18
+  },
+  offline: {
+    position: "absolute",
+    width: "100%",
+    height: 100,
+    paddingTop: 30,
+    backgroundColor: "#f00",
+    alignItems: "center"
+  },
+  offlineText: {
+    color: "#fff"
   }
 });
